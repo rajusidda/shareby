@@ -1,6 +1,6 @@
-package com.file.operations.FileSharing.repository;
+package com.file.shareby.repository;
 
-import com.file.operations.FileSharing.domain.DataFile;
+import com.file.shareby.domain.DataFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

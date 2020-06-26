@@ -1,4 +1,4 @@
-package com.file.operations.FileSharing.domain;
+package com.file.shareby.domain;
 
 import lombok.Data;
 
