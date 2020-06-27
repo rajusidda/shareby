@@ -38,10 +38,7 @@ public class SharedbyController {
 
         DataFile file = sharedbyService.getFile(id);
         if(file!=null) {
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(file.getFileType()))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:filename=\"" + file.getFileName() + "\"")
-                    .body(new ByteArrayResource(file.getData()));
+            return new ResponseEntity<>(new ByteArrayResource(file.getData()),HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }

@@ -79,8 +79,8 @@ public class SharedbyService {
         share.setOwnerEmial(email);
         Optional<DataFile> dataFile = fileStorageRepository.findById(share.getFileId());
         if(dataFile.isPresent() && dataFile.get().getEmail().equals(email)) {
-            Share share1 = fileSharingRepository.save(share);
-            return new ResponseEntity<>(share1, HttpStatus.OK);
+            Share shareData = fileSharingRepository.save(share);
+            return new ResponseEntity<>(shareData, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
