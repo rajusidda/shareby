@@ -30,7 +30,10 @@ public class SharedbyController {
     @PostMapping("/uploadFile")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         DataFile dataFile = sharedbyService.uploadFile(file);
-        return new ResponseEntity<>(dataFile.getId(), HttpStatus.OK);
+        if (null != dataFile) {
+            return new ResponseEntity<>(dataFile.getId(), HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/api/file/{id}")

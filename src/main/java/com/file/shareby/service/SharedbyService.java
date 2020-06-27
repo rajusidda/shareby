@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,6 +58,7 @@ public class SharedbyService {
     public DataFile uploadFile(MultipartFile file) throws IllegalStateException {
         String filename = file.getOriginalFilename();
         try {
+        file.transferTo(new File("/Users/sraju/Documents/file/"+file.getOriginalFilename()));
         DataFile dataFile = new DataFile(filename,email,file.getContentType(), file.getBytes());
         return fileStorageRepository.save(dataFile);
         }catch (Exception e){
