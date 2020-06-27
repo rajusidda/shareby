@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
+@RequestMapping("/api")
 @RestController
 public class SharedbyController {
 
@@ -27,7 +27,7 @@ public class SharedbyController {
     }
 
 
-    @PostMapping("/uploadFile")
+    @PostMapping("/v1/file/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         DataFile dataFile = sharedbyService.uploadFile(file);
         if (null != dataFile) {
@@ -36,7 +36,7 @@ public class SharedbyController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/api/file/{id}")
+    @GetMapping("/v1/file/{id}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable ("id") String id ){
 
         DataFile file = sharedbyService.getFile(id);
@@ -46,13 +46,13 @@ public class SharedbyController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @PostMapping("/api/share")
+    @PostMapping("/v1/file/share")
     public ResponseEntity<Share> shreFile(@RequestBody Share share){
 
         return sharedbyService.shareFile(share);
     }
 
-    @GetMapping("/api/file")
+    @GetMapping("/v1/file")
     public ResponseEntity<?> getFiles(){
        return sharedbyService.getFiles();
     }
