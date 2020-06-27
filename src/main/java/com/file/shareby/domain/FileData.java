@@ -14,7 +14,7 @@ import javax.persistence.Lob;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataFile {
+public class FileData {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -30,7 +30,7 @@ public class DataFile {
     @Lob
     private byte[] data;
 
-    public DataFile(String filename,String email,String fileType, byte[] bytes) {
+    public FileData(String filename, String email, String fileType, byte[] bytes) {
         this.fileName = filename;
         this.email = email;
         this.fileType = fileType;

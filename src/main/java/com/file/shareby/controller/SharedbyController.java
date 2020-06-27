@@ -1,14 +1,12 @@
 package com.file.shareby.controller;
 
-import com.file.shareby.domain.DataFile;
-import com.file.shareby.domain.Share;
+import com.file.shareby.domain.FileData;
+import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.User;
 import com.file.shareby.service.SharedbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,9 +27,9 @@ public class SharedbyController {
 
     @PostMapping("/v1/file/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        DataFile dataFile = sharedbyService.uploadFile(file);
-        if (null != dataFile) {
-            return new ResponseEntity<>(dataFile.getId(), HttpStatus.OK);
+        FileData fileData = sharedbyService.uploadFile(file);
+        if (null != fileData) {
+            return new ResponseEntity<>(fileData.getId(), HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
@@ -39,7 +37,7 @@ public class SharedbyController {
     @GetMapping("/v1/file/{id}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable ("id") String id ){
 
-        DataFile file = sharedbyService.getFile(id);
+        FileData file = sharedbyService.getFile(id);
         if(file!=null) {
             return new ResponseEntity<>(new ByteArrayResource(file.getData()),HttpStatus.OK);
         }
@@ -47,9 +45,9 @@ public class SharedbyController {
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity<Share> shreFile(@RequestBody Share share){
+    public ResponseEntity<SharedData> shreFile(@RequestBody SharedData sharedData){
 
-        return sharedbyService.shareFile(share);
+        return sharedbyService.shareFile(sharedData);
     }
 
     @GetMapping("/v1/file")

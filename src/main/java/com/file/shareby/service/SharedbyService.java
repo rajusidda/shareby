@@ -1,7 +1,7 @@
 package com.file.shareby.service;
 
-import com.file.shareby.domain.DataFile;
-import com.file.shareby.domain.Share;
+import com.file.shareby.domain.FileData;
+import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.User;
 import com.file.shareby.repository.FileSharingRepository;
 import com.file.shareby.repository.FileStorageRepository;
@@ -58,42 +58,42 @@ public class SharedbyService {
         return new ResponseEntity<User>(HttpStatus.CREATED);
     }
 
-    public DataFile uploadFile(MultipartFile file) throws IllegalStateException {
+    public FileData uploadFile(MultipartFile file) throws IllegalStateException {
         String filename = file.getOriginalFilename();
         try {
         file.transferTo(new File(FILE_UPLOAD_PATH + file.getOriginalFilename()));
-        DataFile dataFile = new DataFile(filename,email,file.getContentType(), file.getBytes());
-        return fileStorageRepository.save(dataFile);
+        FileData fileData = new FileData(filename,email,file.getContentType(), file.getBytes());
+        return fileStorageRepository.save(fileData);
         }catch (Exception e){
                 e.printStackTrace();
         }
         return null;
     }
 
-    public DataFile getFile(String id) {
-        Optional<DataFile> dataFile = fileStorageRepository.findById(id);
-        Optional<Share> share = fileSharingRepository.findByFileId(id);
-        if(dataFile.isPresent() || share.isPresent() && dataFile.get().getEmail().equals(email)){
+    public FileData getFile(String id) {
+        Optional<FileData> fileData = fileStorageRepository.findById(id);
+        Optional<SharedData> sharedData = fileSharingRepository.findByFileId(id);
+        if(fileData.isPresent() || sharedData.isPresent() && fileData.get().getEmail().equals(email)){
             return fileStorageRepository.findById(id).get();
         }
         return null;
 
     }
 
-    public ResponseEntity<Share> shareFile(Share share) {
-        share.setOwnerEmial(email);
-        Optional<DataFile> dataFile = fileStorageRepository.findById(share.getFileId());
-        if(dataFile.isPresent() && dataFile.get().getEmail().equals(email)) {
-            Share shareData = fileSharingRepository.save(share);
-            return new ResponseEntity<>(shareData, HttpStatus.OK);
+    public ResponseEntity<SharedData> shareFile(SharedData sharedData) {
+        sharedData.setOwnerEmail(email);
+        Optional<FileData> fileData = fileStorageRepository.findById(sharedData.getFileId());
+        if(fileData.isPresent() && fileData.get().getEmail().equals(email)) {
+            SharedData sharedDataData = fileSharingRepository.save(sharedData);
+            return new ResponseEntity<>(sharedDataData, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     public ResponseEntity<?> getFiles() {
         HashMap<String,String> map = new HashMap<>();
-        fileStorageRepository.findAllByEmail(email).forEach(dataFile -> map.put(dataFile.getId(),OWNED));
-        fileSharingRepository.findAllByUserEmail(email).forEach(share -> map.put(share.getFileId(),SHARED));
+        fileStorageRepository.findAllByEmail(email).forEach(fileData -> map.put(fileData.getId(),OWNED));
+        fileSharingRepository.findAllByUserEmail(email).forEach(sharedData -> map.put(sharedData.getFileId(),SHARED));
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

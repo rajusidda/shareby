@@ -9,12 +9,12 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-public class Share {
+public class SharedData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String ownerEmial;
+    private String ownerEmail;
     private String userEmail;
     private String fileId;
 }

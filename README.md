@@ -20,5 +20,5 @@ Endpoint Exposed Endpoints:
 - POST /api/register
 - POST /api/v1/file/upload
 - GET  /api/v1/file/{id}
-- POST /api/v1/file/share
+- POST /api/v1/file/sharedData
 - GET  /api/v1/file
