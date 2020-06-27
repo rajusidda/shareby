@@ -1,8 +1,6 @@
 package com.file.shareby.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
@@ -12,8 +10,6 @@ import javax.persistence.Lob;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class FileData {
 
     @Id
@@ -35,5 +31,6 @@ public class FileData {
         this.email = email;
         this.fileType = fileType;
         this.data = bytes;
+
     }
 }

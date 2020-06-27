@@ -17,13 +17,12 @@ import java.io.IOException;
 public class SharedbyController {
 
     @Autowired
-    SharedbyService sharedbyService;
+    private SharedbyService sharedbyService;
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody User user){
         return  sharedbyService.registerUser(user);
     }
-
 
     @PostMapping("/v1/file/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
@@ -46,7 +45,6 @@ public class SharedbyController {
 
     @PostMapping("/v1/file/share")
     public ResponseEntity<SharedData> shreFile(@RequestBody SharedData sharedData){
-
         return sharedbyService.shareFile(sharedData);
     }
 

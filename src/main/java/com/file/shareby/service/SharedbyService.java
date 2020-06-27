@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Objects;
@@ -33,16 +32,13 @@ public class SharedbyService {
     private String FILE_UPLOAD_PATH;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    FileStorageRepository fileStorageRepository;
+    private FileStorageRepository fileStorageRepository;
 
     @Autowired
-    FileSharingRepository fileSharingRepository;
-
-    @Autowired
-    HttpSession httpSession;
+    private FileSharingRepository fileSharingRepository;
 
     public ResponseEntity registerUser(User user) {
         log.debug("user registration");
@@ -61,9 +57,9 @@ public class SharedbyService {
     public FileData uploadFile(MultipartFile file) throws IllegalStateException {
         String filename = file.getOriginalFilename();
         try {
-        file.transferTo(new File(FILE_UPLOAD_PATH + file.getOriginalFilename()));
-        FileData fileData = new FileData(filename,email,file.getContentType(), file.getBytes());
-        return fileStorageRepository.save(fileData);
+            file.transferTo(new File(FILE_UPLOAD_PATH + file.getOriginalFilename()));
+            FileData fileData = new FileData(filename,email,file.getContentType(), file.getBytes());
+            return fileStorageRepository.save(fileData);
         }catch (Exception e){
                 e.printStackTrace();
         }
@@ -92,8 +88,11 @@ public class SharedbyService {
 
     public ResponseEntity<?> getFiles() {
         HashMap<String,String> map = new HashMap<>();
-        fileStorageRepository.findAllByEmail(email).forEach(fileData -> map.put(fileData.getId(),OWNED));
-        fileSharingRepository.findAllByUserEmail(email).forEach(sharedData -> map.put(sharedData.getFileId(),SHARED));
+        fileStorageRepository.findAllByEmail(email)
+                             .forEach(fileData -> map.put(fileData.getId(),OWNED));
+        fileSharingRepository.findAllByUserEmail(email)
+                             .forEach(sharedData -> map.put(sharedData.getFileId(),SHARED));
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
 }
