@@ -8,6 +8,7 @@ import com.file.shareby.repository.FileStorageRepository;
 import com.file.shareby.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class SharedbyService {
     public static final String SHARED = "shared";
     public static String email;
 
+    @Value("${file.upload-path}")
+    private String FILE_UPLOAD_PATH;
+
     @Autowired
     UserRepository userRepository;
 
@@ -41,7 +45,6 @@ public class SharedbyService {
     HttpSession httpSession;
 
     public ResponseEntity registerUser(User user) {
-
         log.debug("user registration");
         Optional<User> availableUser = null;
         if(Objects.nonNull(user) && StringUtils.hasText(user.getEmail())){
@@ -58,7 +61,7 @@ public class SharedbyService {
     public DataFile uploadFile(MultipartFile file) throws IllegalStateException {
         String filename = file.getOriginalFilename();
         try {
-        file.transferTo(new File("/Users/sraju/Documents/file/"+file.getOriginalFilename()));
+        file.transferTo(new File(FILE_UPLOAD_PATH + file.getOriginalFilename()));
         DataFile dataFile = new DataFile(filename,email,file.getContentType(), file.getBytes());
         return fileStorageRepository.save(dataFile);
         }catch (Exception e){
