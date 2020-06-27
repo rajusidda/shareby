@@ -25,16 +25,20 @@ public class SharedbyController {
     }
 
     @PostMapping("/v1/file/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         FileData fileData = sharedbyService.uploadFile(file);
         if (null != fileData) {
+            /*Response response = Response.builder()
+                                        .fileID(fileData.getId())
+                                        .email(fileData.getEmail())
+                                        .build();*/
             return new ResponseEntity<>(fileData.getId(), HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/v1/file/{id}")
-    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable ("id") String id ){
+    public ResponseEntity downloadFile(@PathVariable ("id") String id ){
 
         FileData file = sharedbyService.getFile(id);
         if(file!=null) {
@@ -44,14 +48,13 @@ public class SharedbyController {
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity<SharedData> shreFile(@RequestBody SharedData sharedData){
+    public ResponseEntity shreFile(@RequestBody SharedData sharedData){
         return sharedbyService.shareFile(sharedData);
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity<?> getFiles(){
+    public ResponseEntity getFiles(){
        return sharedbyService.getFiles();
     }
-
 
 }

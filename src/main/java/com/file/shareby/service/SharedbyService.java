@@ -3,6 +3,7 @@ package com.file.shareby.service;
 import com.file.shareby.domain.FileData;
 import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.User;
+import com.file.shareby.payload.Response;
 import com.file.shareby.repository.FileSharingRepository;
 import com.file.shareby.repository.FileStorageRepository;
 import com.file.shareby.repository.UserRepository;
@@ -47,11 +48,15 @@ public class SharedbyService {
             availableUser = userRepository.findByEmail(user.getEmail());
         }
         if(availableUser.isPresent()){
-            return new ResponseEntity<>(availableUser, HttpStatus.OK);
+
+            /*Response response = Response.builder()
+                                        .email(availableUser.get().getEmail())
+                                        .build();*/
+            return new ResponseEntity<>(availableUser.get().getEmail(), HttpStatus.OK);
         }
         User userdata = userRepository.save(user);
         email = userdata.getEmail();
-        return new ResponseEntity<User>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     public FileData uploadFile(MultipartFile file) throws IllegalStateException {
@@ -76,17 +81,21 @@ public class SharedbyService {
 
     }
 
-    public ResponseEntity<SharedData> shareFile(SharedData sharedData) {
+    public ResponseEntity shareFile(SharedData sharedData) {
         sharedData.setOwnerEmail(email);
         Optional<FileData> fileData = fileStorageRepository.findById(sharedData.getFileId());
         if(fileData.isPresent() && fileData.get().getEmail().equals(email)) {
             SharedData sharedDataData = fileSharingRepository.save(sharedData);
-            return new ResponseEntity<>(sharedDataData, HttpStatus.OK);
+            Response response = Response.builder()
+                                        .fileID(sharedDataData.getFileId())
+                                        .email(sharedDataData.getUserEmail())
+                                        .build();
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    public ResponseEntity<?> getFiles() {
+    public ResponseEntity getFiles() {
         HashMap<String,String> map = new HashMap<>();
         fileStorageRepository.findAllByEmail(email)
                              .forEach(fileData -> map.put(fileData.getId(),OWNED));
