@@ -7,6 +7,7 @@ The aim of this project  :
 
 Tech Stack:
 - Spring Boot
+- Java 1.8
 - JPA
 - Restfull 
 - Lombok
@@ -16,8 +17,8 @@ Tech Stack:
 
 
 Endpoint Exposed Endpoints:
-- POST /register
-- POST /api/file
-- GET /api/file/{id}
-- POST /api/file
-- GET /api/file
+- POST /api/register
+- POST /api/v1/file/upload
+- GET  /api/v1/file/{id}
+- POST /api/v1/file/share
+- GET  /api/v1/file
