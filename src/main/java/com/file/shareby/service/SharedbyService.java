@@ -36,8 +36,6 @@ public class SharedbyService {
     @Value("${file.upload-path}")
     private String FILE_UPLOAD_PATH;
 
-
-
     @Autowired
     private UploadDataRepository uploadDataRepository;
 

@@ -26,15 +26,9 @@ public class UserService {
             availableUser = userRepository.findByEmail(user.getEmail());
         }
         if (availableUser.isPresent()) {
-            User user1 = new User();
-            user1.setEmail(availableUser.get().getEmail());
-            user1.setId(availableUser.get().getId());
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        User userdata = userRepository.save(user);
-        User user2 = new User();
-        user2.setEmail(userdata.getEmail());
-        user2.setId(userdata.getId());
+        userRepository.save(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
