@@ -76,11 +76,7 @@ public class SharedbyService {
         Optional<UploadData> fileData = uploadDataRepository.findById(sharedData.getFileId());
         if (fileData.isPresent() && fileData.get().getUser().getEmail().equals(loginUser.getEmail())) {
             SharedData sharedDataData = sharedDataRepository.save(sharedData);
-            /*Response response = Response.builder()
-                                        .fileID(sharedDataData.getFileId())
-                                        .email(sharedDataData.getUserEmail())
-                                        .build();*/
-            return new ResponseEntity<>(sharedDataData, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
