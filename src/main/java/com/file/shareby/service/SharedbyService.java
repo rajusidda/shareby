@@ -40,8 +40,7 @@ public class SharedbyService {
     @Value("${file.upload-path}")
     private String FILE_UPLOAD_PATH;
 
-    @Autowired
-    private UserRepository userRepository;
+
 
     @Autowired
     private UploadDataRepository uploadDataRepository;
@@ -49,26 +48,7 @@ public class SharedbyService {
     @Autowired
     private SharedDataRepository sharedDataRepository;
 
-    public ResponseEntity registerUser(User user) {
-        log.debug("user registration");
-        Optional<User> availableUser = null;
-        if (Objects.nonNull(user) && StringUtils.hasText(user.getEmail())) {
-            availableUser = userRepository.findByEmail(user.getEmail());
-        }
-        if (availableUser.isPresent()) {
-            User user1 = new User();
-            user1.setEmail(availableUser.get().getEmail());
-            user1.setId(availableUser.get().getId());
-            loginUser = user1;
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        User userdata = userRepository.save(user);
-        User user2 = new User();
-        user2.setEmail(userdata.getEmail());
-        user2.setId(userdata.getId());
-        loginUser = user2;
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+
 
     public UploadData uploadFile(MultipartFile file) throws Exception {
 

@@ -20,11 +20,6 @@ public class SharedbyController {
     @Autowired
     private SharedbyService sharedbyService;
 
-    @PostMapping("/register")
-    public ResponseEntity register(@RequestBody User user) {
-        return sharedbyService.registerUser(user);
-    }
-
     @PostMapping("/v1/file/upload")
     public ResponseEntity<Response> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
