@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SharedDataRepository extends JpaRepository<SharedData,String>{
+public interface SharedDataRepository extends JpaRepository<SharedData, String> {
     Optional<SharedData> findByFileId(String id);
+
     List<SharedData> findByToUsers(User user);
 }

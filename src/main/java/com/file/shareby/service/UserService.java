@@ -22,7 +22,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public ResponseEntity registerUser(User user,HttpSession httpSession) {
+    public ResponseEntity registerUser(User user, HttpSession httpSession) {
         log.debug("user registration");
         if (Objects.nonNull(user) && StringUtils.hasText(user.getEmail())) {
             Optional<User> availableUser = userRepository.findByEmail(user.getEmail());
@@ -32,7 +32,7 @@ public class UserService {
             }
         }
         User userData = userRepository.save(user);
-        httpSession.setAttribute("user",userData);
+        httpSession.setAttribute("user", userData);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

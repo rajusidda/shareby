@@ -23,6 +23,6 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody User user, HttpSession httpSession) {
 
-        return userService.registerUser(user,httpSession);
+        return userService.registerUser(user, httpSession);
     }
 }
