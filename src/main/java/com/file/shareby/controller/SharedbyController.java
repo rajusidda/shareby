@@ -1,18 +1,19 @@
 package com.file.shareby.controller;
 
-import com.file.shareby.domain.FileData;
 import com.file.shareby.domain.SharedData;
+import com.file.shareby.domain.UploadData;
 import com.file.shareby.domain.User;
+import com.file.shareby.payload.Response;
 import com.file.shareby.service.SharedbyService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 @RequestMapping("/api")
+@Slf4j
 @RestController
 public class SharedbyController {
 
@@ -20,41 +21,46 @@ public class SharedbyController {
     private SharedbyService sharedbyService;
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody User user){
-        return  sharedbyService.registerUser(user);
+    public ResponseEntity register(@RequestBody User user) {
+        return sharedbyService.registerUser(user);
     }
 
     @PostMapping("/v1/file/upload")
-    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        FileData fileData = sharedbyService.uploadFile(file);
-        if (null != fileData) {
-            /*Response response = Response.builder()
-                                        .fileID(fileData.getId())
-                                        .email(fileData.getEmail())
-                                        .build();*/
-            return new ResponseEntity<>(fileData.getId(), HttpStatus.OK);
+    public ResponseEntity<Response> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            UploadData uploadData = sharedbyService.uploadFile(file);
+            Response response = Response.builder()
+                    .fileID(uploadData.getId())
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("Exception occurred while saving the file");
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/v1/file/{id}")
-    public ResponseEntity downloadFile(@PathVariable ("id") String id ){
-
-        FileData file = sharedbyService.getFile(id);
-        if(file!=null) {
-            return new ResponseEntity<>(new ByteArrayResource(file.getData()),HttpStatus.OK);
+    public ResponseEntity downloadFile(@PathVariable("id") String id) {
+        try {
+            String file = sharedbyService.downloadFile(id);
+            return new ResponseEntity<>(file, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("Exception occurred while downloading file");
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity shreFile(@RequestBody SharedData sharedData){
+    public ResponseEntity shreFile(@RequestBody SharedData sharedData) {
         return sharedbyService.shareFile(sharedData);
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity getFiles(){
-       return sharedbyService.getFiles();
+    public ResponseEntity getFiles() {
+        return sharedbyService.getFiles();
     }
 
 }
