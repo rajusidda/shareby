@@ -37,7 +37,6 @@ public class SharedbyController {
             e.printStackTrace();
             log.info("Exception occurred while saving the file");
         }
-
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

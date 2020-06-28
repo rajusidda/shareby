@@ -4,8 +4,8 @@ import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.UploadData;
 import com.file.shareby.domain.User;
 import com.file.shareby.payload.Response;
-import com.file.shareby.repository.FileSharingRepository;
-import com.file.shareby.repository.FileStorageRepository;
+import com.file.shareby.repository.SharedDataRepository;
+import com.file.shareby.repository.UploadDataRepository;
 import com.file.shareby.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +44,10 @@ public class SharedbyService {
     private UserRepository userRepository;
 
     @Autowired
-    private FileStorageRepository fileStorageRepository;
+    private UploadDataRepository uploadDataRepository;
 
     @Autowired
-    private FileSharingRepository fileSharingRepository;
+    private SharedDataRepository sharedDataRepository;
 
     public ResponseEntity registerUser(User user) {
         log.debug("user registration");
@@ -60,10 +60,7 @@ public class SharedbyService {
             user1.setEmail(availableUser.get().getEmail());
             user1.setId(availableUser.get().getId());
             loginUser = user1;
-            Response response = Response.builder()
-                    .email(availableUser.get().getEmail())
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         User userdata = userRepository.save(user);
         User user2 = new User();
@@ -77,19 +74,19 @@ public class SharedbyService {
 
         String filename = file.getOriginalFilename() + LocalDateTime.now();
         file.transferTo(new File(FILE_UPLOAD_PATH + filename));
-        UploadData uploadData = new UploadData();
-        uploadData.setFileName(filename);
-        uploadData.setFileType(file.getContentType());
-        uploadData.setUser(loginUser);
-        UploadData uploadData1 = fileStorageRepository.save(uploadData);
+        UploadData data = new UploadData();
+        data.setFileName(filename);
+        data.setFileType(file.getContentType());
+        data.setUser(loginUser);
+        UploadData uploadData = uploadDataRepository.save(data);
 
-        return uploadData1;
+        return uploadData;
 
     }
 
     public String downloadFile(String id) throws IOException {
-        Optional<UploadData> fileData = fileStorageRepository.findById(id);
-        Optional<SharedData> sharedData = fileSharingRepository.findByFileId(id);
+        Optional<UploadData> fileData = uploadDataRepository.findById(id);
+        Optional<SharedData> sharedData = sharedDataRepository.findByFileId(id);
         if (fileData.isPresent() || sharedData.isPresent()
                 && fileData.get().getUser().getEmail().equals(loginUser.getEmail())) {
             return new String(Files.readAllBytes(Paths.get(FILE_UPLOAD_PATH + fileData.get().getFileName())));
@@ -99,10 +96,10 @@ public class SharedbyService {
     }
 
     public ResponseEntity shareFile(SharedData sharedData) {
-
-        Optional<UploadData> fileData = fileStorageRepository.findById(sharedData.getFileId());
+        //uploadDataRepository.findByUser(sharedData.getToUsers().get(0));
+        Optional<UploadData> fileData = uploadDataRepository.findById(sharedData.getFileId());
         if (fileData.isPresent() && fileData.get().getUser().getEmail().equals(loginUser.getEmail())) {
-            SharedData sharedDataData = fileSharingRepository.save(sharedData);
+            SharedData sharedDataData = sharedDataRepository.save(sharedData);
             /*Response response = Response.builder()
                                         .fileID(sharedDataData.getFileId())
                                         .email(sharedDataData.getUserEmail())
@@ -115,13 +112,13 @@ public class SharedbyService {
     public ResponseEntity getFiles() {
 
         List<Object> objectList = new ArrayList<>();
-        List<UploadData> uploadDataList = fileStorageRepository.findByUser(loginUser).stream()
+        List<UploadData> uploadDataList = uploadDataRepository.findByUser(loginUser).stream()
                 .map(uploadData -> {
                     uploadData.setFileBy(OWNED);
                     return uploadData;
                 }).collect(Collectors.toList());
 
-        List<SharedData> sharedDataList = fileSharingRepository.findByToUsers(loginUser).stream()
+        List<SharedData> sharedDataList = sharedDataRepository.findByToUsers(loginUser).stream()
                 .map(sharedData -> {
                     sharedData.setFileBy(SHARED);
                     return sharedData;

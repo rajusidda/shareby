@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface FileStorageRepository extends JpaRepository<UploadData,String>  {
+public interface UploadDataRepository extends JpaRepository<UploadData,String>  {
    List<UploadData> findByUser(User user);
 }

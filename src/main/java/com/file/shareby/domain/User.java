@@ -3,12 +3,12 @@ package com.file.shareby.domain;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 
 @Data
 @Entity
+@Table(indexes = { @Index(name = "email", columnList = "id,email") })
 public class User {
     @Id
     @GeneratedValue(generator = "uuid")
