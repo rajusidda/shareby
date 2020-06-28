@@ -2,8 +2,7 @@ package com.file.shareby.controller;
 
 import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.UploadData;
-import com.file.shareby.domain.User;
-import com.file.shareby.payload.Response;
+import com.file.shareby.payload.UploadResponse;
 import com.file.shareby.service.SharedbyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +20,12 @@ public class SharedbyController {
     private SharedbyService sharedbyService;
 
     @PostMapping("/v1/file/upload")
-    public ResponseEntity<Response> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             UploadData uploadData = sharedbyService.uploadFile(file);
-            Response response = Response.builder()
-                    .fileID(uploadData.getId())
-                    .build();
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            UploadResponse uploadResponse = new UploadResponse();
+            uploadResponse.setFileID(uploadData.getId());
+            return new ResponseEntity<>(uploadResponse, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("Exception occurred while saving the file");

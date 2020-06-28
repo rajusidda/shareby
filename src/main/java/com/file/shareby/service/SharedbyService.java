@@ -3,10 +3,8 @@ package com.file.shareby.service;
 import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.UploadData;
 import com.file.shareby.domain.User;
-import com.file.shareby.payload.Response;
 import com.file.shareby.repository.SharedDataRepository;
 import com.file.shareby.repository.UploadDataRepository;
-import com.file.shareby.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -24,7 +21,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
