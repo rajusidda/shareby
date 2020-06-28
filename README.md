@@ -1,11 +1,11 @@
 # Shareby
 
-###The aim of this project  :
+### The aim of this project  :
 - Uploading file
 - Downloading file
 - Share the file with others 
 
-###Tech Stack:
+### Tech Stack:
 - Spring Boot
 - Java 1.8
 - JPA
@@ -16,7 +16,7 @@
 - Maven
 
 
-###Endpoint Exposed Endpoints:
+### Endpoint Exposed Endpoints:
 - POST /api/register
 - POST /api/v1/file/upload
 - GET  /api/v1/file/{id}
