@@ -2,6 +2,7 @@ package com.file.shareby.controller;
 
 import com.file.shareby.domain.SharedData;
 import com.file.shareby.domain.UploadData;
+import com.file.shareby.domain.User;
 import com.file.shareby.payload.UploadResponse;
 import com.file.shareby.service.SharedbyService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpSession;
 
 @RequestMapping("/api")
 @Slf4j
@@ -20,9 +23,10 @@ public class SharedbyController {
     private SharedbyService sharedbyService;
 
     @PostMapping("/v1/file/upload")
-    public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file,HttpSession httpSession) {
         try {
-            UploadData uploadData = sharedbyService.uploadFile(file);
+            User user = (User) httpSession.getAttribute("user");
+            UploadData uploadData = sharedbyService.uploadFile(file,user);
             UploadResponse uploadResponse = new UploadResponse();
             uploadResponse.setFileID(uploadData.getId());
             return new ResponseEntity<>(uploadResponse, HttpStatus.OK);
@@ -34,9 +38,10 @@ public class SharedbyController {
     }
 
     @GetMapping("/v1/file/{id}")
-    public ResponseEntity downloadFile(@PathVariable("id") String id) {
+    public ResponseEntity<?> downloadFile(@PathVariable("id") String id,HttpSession httpSession) {
         try {
-            String file = sharedbyService.downloadFile(id);
+            User user = (User) httpSession.getAttribute("user");
+            String file = sharedbyService.downloadFile(id,user);
             return new ResponseEntity<>(file, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,13 +51,15 @@ public class SharedbyController {
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity shreFile(@RequestBody SharedData sharedData) {
-        return sharedbyService.shareFile(sharedData);
+    public ResponseEntity<?> shreFile(@RequestBody SharedData sharedData,HttpSession httpSession) {
+        User user = (User) httpSession.getAttribute("user");
+        return sharedbyService.shareFile(sharedData,user);
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity getFiles() {
-        return sharedbyService.getFiles();
+    public ResponseEntity<?> getFiles(HttpSession httpSession) {
+        User user = (User) httpSession.getAttribute("user");
+        return sharedbyService.getFiles(user);
     }
 
 }
