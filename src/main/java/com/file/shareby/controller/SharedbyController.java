@@ -38,7 +38,7 @@ public class SharedbyController {
     }
 
     @GetMapping("/v1/file/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable("id") String id,HttpSession httpSession) {
+    public ResponseEntity downloadFile(@PathVariable("id") String id,HttpSession httpSession) {
         try {
             User user = (User) httpSession.getAttribute("user");
             String file = sharedbyService.downloadFile(id,user);
@@ -51,13 +51,13 @@ public class SharedbyController {
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity<?> shreFile(@RequestBody SharedData sharedData,HttpSession httpSession) {
+    public ResponseEntity shreFile(@RequestBody SharedData sharedData,HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
         return sharedbyService.shareFile(sharedData,user);
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity<?> getFiles(HttpSession httpSession) {
+    public ResponseEntity getFiles(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
         return sharedbyService.getFiles(user);
     }
