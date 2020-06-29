@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -54,10 +55,7 @@ public class SharedbyService {
         data.setFileName(filename);
         data.setFileType(file.getContentType());
         data.setUser(user);
-        UploadData uploadData = uploadDataRepository.save(data);
-
-        return uploadData;
-
+        return uploadDataRepository.save(data);
     }
 
     public String downloadFile(String id, User user) throws IOException {
@@ -86,7 +84,7 @@ public class SharedbyService {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    public ResponseEntity getFiles(User user) {
+    public ResponseEntity<Object> getFiles(User user) {
 
         List<Object> objectList = new ArrayList<>();
         List<UploadData> uploadDataList = uploadDataRepository.findByUser(user).stream()
@@ -103,8 +101,10 @@ public class SharedbyService {
                 .collect(Collectors.toList());
         objectList.add(uploadDataList);
         objectList.add(sharedDataList);
-
-        return new ResponseEntity<>(objectList, HttpStatus.OK);
+        if(uploadDataList.size() > 0 || sharedDataList.size() > 0) {
+            return new ResponseEntity<>(objectList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(objectList, HttpStatus.NOT_FOUND);
     }
 
 

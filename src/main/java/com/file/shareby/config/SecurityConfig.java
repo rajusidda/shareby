@@ -18,7 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/console/**").permitAll()
+                .antMatchers("/console/**").permitAll() // For h2 database
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/v1/file/**").hasRole("USER")
                 .and()

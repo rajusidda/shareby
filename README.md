@@ -1,9 +1,10 @@
 # Shareby
 
 ### The aim of this project  :
+- File sharing between users 
 - Uploading file
 - Downloading file
-- Share the file with others 
+
 
 ### Tech Stack:
 - Spring Boot
@@ -22,3 +23,9 @@
 - GET  /api/v1/file/{id}
 - POST /api/v1/file/sharedData
 - GET  /api/v1/file
+
+### Tables:
+- SHARED_DATA
+- SHARED_DATA_TO_USERS
+- UPLOAD_DATA
+- USER

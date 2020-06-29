@@ -57,7 +57,7 @@ public class SharedbyController {
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity getFiles(HttpSession httpSession) {
+    public ResponseEntity<Object> getFiles(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
         return sharedbyService.getFiles(user);
     }

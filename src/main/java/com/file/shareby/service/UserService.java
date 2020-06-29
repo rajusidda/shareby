@@ -30,9 +30,10 @@ public class UserService {
                 httpSession.setAttribute("user", availableUser.get());
                 return new ResponseEntity<>(HttpStatus.OK);
             }
+            User userData = userRepository.save(user);
+            httpSession.setAttribute("user", userData);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        User userData = userRepository.save(user);
-        httpSession.setAttribute("user", userData);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 }
