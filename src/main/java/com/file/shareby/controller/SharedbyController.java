@@ -1,9 +1,13 @@
 package com.file.shareby.controller;
 
-import com.file.shareby.domain.SharedData;
+import com.file.shareby.customexception.FileNotFoundException;
+import com.file.shareby.customexception.FileStorageException;
 import com.file.shareby.domain.UploadData;
 import com.file.shareby.domain.User;
-import com.file.shareby.payload.UploadResponse;
+import com.file.shareby.payload.DownloadDTO;
+import com.file.shareby.payload.FilesDTO;
+import com.file.shareby.payload.SharedDataDTO;
+import com.file.shareby.payload.UploadDataDTO;
 import com.file.shareby.service.SharedbyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,43 +27,79 @@ public class SharedbyController {
     private SharedbyService sharedbyService;
 
     @PostMapping("/v1/file/upload")
-    public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file,HttpSession httpSession) {
+    public ResponseEntity<UploadDataDTO> uploadFile(@RequestParam("file") MultipartFile file, HttpSession httpSession) {
+        UploadDataDTO uploadDataDTO;
         try {
             User user = (User) httpSession.getAttribute("user");
-            UploadData uploadData = sharedbyService.uploadFile(file,user);
-            UploadResponse uploadResponse = new UploadResponse();
-            uploadResponse.setFileID(uploadData.getId());
-            return new ResponseEntity<>(uploadResponse, HttpStatus.OK);
+            UploadData uploadData = sharedbyService.uploadFile(file, user);
+            uploadDataDTO = new UploadDataDTO();
+            uploadDataDTO.setId(uploadData.getId());
+        } catch (FileStorageException e) {
+            e.printStackTrace();
+            log.info("FileStorageException occurred while saving the file");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("Exception occurred while saving the file");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(uploadDataDTO, HttpStatus.OK);
     }
 
     @GetMapping("/v1/file/{id}")
-    public ResponseEntity downloadFile(@PathVariable("id") String id,HttpSession httpSession) {
+    public ResponseEntity<DownloadDTO> downloadFile(@ModelAttribute DownloadDTO downloadDto, HttpSession httpSession) {
+        DownloadDTO file;
         try {
             User user = (User) httpSession.getAttribute("user");
-            String file = sharedbyService.downloadFile(id,user);
-            return new ResponseEntity<>(file, HttpStatus.OK);
+            String fileResponse = sharedbyService.downloadFile(downloadDto.getId(), user);
+            file = new DownloadDTO();
+            file.setFile(fileResponse);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            log.info("file is not available to download");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
         } catch (Exception e) {
             e.printStackTrace();
-            log.debug("Exception occurred while downloading file");
+            log.debug("User don't have permission for downloading this file");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(file, HttpStatus.OK);
+
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity shreFile(@RequestBody SharedData sharedData,HttpSession httpSession) {
+    public ResponseEntity<SharedDataDTO> shreFile(@RequestBody SharedDataDTO sharedDataDTO, HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
-        return sharedbyService.shareFile(sharedData,user);
+        SharedDataDTO shareFile;
+        try {
+            shareFile = sharedbyService.shareFile(sharedDataDTO, user);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            log.info("file is not available to share with others");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("User don't have permission for this file to share with others");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(shareFile, HttpStatus.OK);
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity<Object> getFiles(HttpSession httpSession) {
+    public ResponseEntity<FilesDTO> getFiles(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
-        return sharedbyService.getFiles(user);
-    }
+        FilesDTO files;
+        try {
+            files = sharedbyService.getFiles(user);
+        }  catch (Exception e) {
+            e.printStackTrace();
+            log.info("Exception occurred while getting the files");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(files, HttpStatus.OK);
 
+    }
 }

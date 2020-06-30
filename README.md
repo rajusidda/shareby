@@ -15,6 +15,7 @@
 - H2 Database
 - Spring security
 - Maven
+- spring security
 
 
 ### Endpoint Exposed Endpoints:
