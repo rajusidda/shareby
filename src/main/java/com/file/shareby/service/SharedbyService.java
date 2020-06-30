@@ -1,5 +1,8 @@
 package com.file.shareby.service;
 
+import com.file.shareby.DTO.FilesDTO;
+import com.file.shareby.DTO.SharedDataDTO;
+import com.file.shareby.DTO.UploadDataDTO;
 import com.file.shareby.customexception.FileNotFoundException;
 import com.file.shareby.customexception.FileStorageException;
 import com.file.shareby.domain.SharedData;
@@ -7,9 +10,6 @@ import com.file.shareby.domain.UploadData;
 import com.file.shareby.domain.User;
 import com.file.shareby.mapping.SharedDataMapper;
 import com.file.shareby.mapping.UploadDataMapper;
-import com.file.shareby.payload.FilesDTO;
-import com.file.shareby.payload.SharedDataDTO;
-import com.file.shareby.payload.UploadDataDTO;
 import com.file.shareby.repository.SharedDataRepository;
 import com.file.shareby.repository.UploadDataRepository;
 import com.file.shareby.repository.UserRepository;
@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -75,10 +75,17 @@ public class SharedbyService {
 
     public String downloadFile(String id, User user) throws IOException {
         Optional<UploadData> fileData = uploadDataRepository.findById(id);
+        if (fileData.isPresent() && fileData.get().getUser().getEmail().equals(user.getEmail())) {
+            String file = new String(Files.readAllBytes(Paths.get(FILE_UPLOAD_PATH + fileData.get().getFileName())));
+            return Base64.getEncoder().encodeToString(file.getBytes());
+        }
         Optional<SharedData> sharedData = sharedDataRepository.findByFileId(id);
-        if (fileData.isPresent() || sharedData.isPresent()
-                && fileData.get().getUser().getEmail().equals(user.getEmail())) {
-            return new String(Files.readAllBytes(Paths.get(FILE_UPLOAD_PATH + fileData.get().getFileName())));
+        long count = sharedData.get().getToUsers().stream()
+                .filter(user1 -> user1.getEmail().equals(user.getEmail()))
+                .count();
+        if (sharedData.isPresent() && count > 0) {
+            String file = new String(Files.readAllBytes(Paths.get(FILE_UPLOAD_PATH + fileData.get().getFileName())));
+            return Base64.getEncoder().encodeToString(file.getBytes());
         }
         throw new FileNotFoundException("file not found for the given id: " + id);
 
@@ -102,7 +109,6 @@ public class SharedbyService {
 
     public FilesDTO getFiles(User user) {
 
-        List<Object> objectList = new ArrayList<>();
         List<UploadDataDTO> uploadDataDTOs = uploadDataRepository.findByUser(user).stream()
                 .map(uploadData -> {
                     uploadData.setFileBy(OWNED);
@@ -125,6 +131,5 @@ public class SharedbyService {
         filesDTO.setUploadData(uploadDataDTOs);
         return filesDTO;
     }
-
 
 }

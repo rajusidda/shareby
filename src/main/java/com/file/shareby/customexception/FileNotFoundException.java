@@ -12,7 +12,4 @@ public class FileNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public FileNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

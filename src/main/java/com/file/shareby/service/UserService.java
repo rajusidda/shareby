@@ -1,9 +1,9 @@
 package com.file.shareby.service;
 
+import com.file.shareby.DTO.UserDTO;
 import com.file.shareby.customexception.InvalidUserDataException;
 import com.file.shareby.domain.User;
 import com.file.shareby.mapping.UserDataMapper;
-import com.file.shareby.payload.UserDTO;
 import com.file.shareby.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

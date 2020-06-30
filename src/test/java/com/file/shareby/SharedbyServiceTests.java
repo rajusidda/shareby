@@ -1,5 +1,7 @@
 package com.file.shareby;
 
+import com.file.shareby.DTO.FilesDTO;
+import com.file.shareby.DTO.SharedDataDTO;
 import com.file.shareby.customexception.FileNotFoundException;
 import com.file.shareby.customexception.FileStorageException;
 import com.file.shareby.domain.SharedData;
@@ -7,8 +9,6 @@ import com.file.shareby.domain.UploadData;
 import com.file.shareby.domain.User;
 import com.file.shareby.mapping.SharedDataMapper;
 import com.file.shareby.mapping.UploadDataMapper;
-import com.file.shareby.payload.FilesDTO;
-import com.file.shareby.payload.SharedDataDTO;
 import com.file.shareby.repository.SharedDataRepository;
 import com.file.shareby.repository.UploadDataRepository;
 import com.file.shareby.repository.UserRepository;
@@ -26,8 +26,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

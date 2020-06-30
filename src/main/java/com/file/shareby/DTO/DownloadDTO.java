@@ -1,4 +1,4 @@
-package com.file.shareby.payload;
+package com.file.shareby.DTO;
 
 import lombok.Data;
 
@@ -6,5 +6,4 @@ import lombok.Data;
 public class DownloadDTO {
     private String id;
     private String file;
-
 }

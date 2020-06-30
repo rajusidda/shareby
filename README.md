@@ -16,6 +16,7 @@
 - Spring security
 - Maven
 - spring security
+- Swagger (partially implemented) 
 
 
 ### Endpoint Exposed Endpoints:
@@ -30,3 +31,7 @@
 - SHARED_DATA_TO_USERS
 - UPLOAD_DATA
 - USER
+
+### Properties which needs to change for testing (application.properties)
+- file.upload-path=/Users/sraju/Documents/file/
+- spring.datasource.url=jdbc:h2:file:/Users/sraju/Documents

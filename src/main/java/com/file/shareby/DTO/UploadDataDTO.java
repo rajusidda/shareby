@@ -1,10 +1,7 @@
-package com.file.shareby.payload;
+package com.file.shareby.DTO;
 
 import com.file.shareby.domain.User;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.ManyToOne;
 
 @Data
 public class UploadDataDTO {

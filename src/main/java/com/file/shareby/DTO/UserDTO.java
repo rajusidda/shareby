@@ -1,4 +1,4 @@
-package com.file.shareby.payload;
+package com.file.shareby.DTO;
 
 import lombok.Data;
 

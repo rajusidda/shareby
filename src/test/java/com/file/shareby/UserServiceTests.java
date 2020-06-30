@@ -1,9 +1,9 @@
 package com.file.shareby;
 
+import com.file.shareby.DTO.UserDTO;
 import com.file.shareby.customexception.InvalidUserDataException;
 import com.file.shareby.domain.User;
 import com.file.shareby.mapping.UserDataMapper;
-import com.file.shareby.payload.UserDTO;
 import com.file.shareby.repository.UserRepository;
 import com.file.shareby.service.UserService;
 import org.junit.Assert;
@@ -14,9 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.servlet.http.HttpSession;
@@ -67,7 +65,6 @@ public class UserServiceTests {
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(getUserData());
         userService.registerUser(getUserDataDTO(), httpSession);
     }
-
 
     public User getUserData(){
         User user = new User();

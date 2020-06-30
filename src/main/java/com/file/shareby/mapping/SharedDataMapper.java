@@ -1,7 +1,7 @@
 package com.file.shareby.mapping;
 
+import com.file.shareby.DTO.SharedDataDTO;
 import com.file.shareby.domain.SharedData;
-import com.file.shareby.payload.SharedDataDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -9,5 +9,6 @@ import org.mapstruct.ReportingPolicy;
 public interface SharedDataMapper {
 
     public abstract SharedDataDTO mapDomainToDto(SharedData sharedData);
+
     SharedData mapDtoToDomain(SharedDataDTO sharedDataDTO);
 }

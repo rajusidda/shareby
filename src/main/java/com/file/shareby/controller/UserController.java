@@ -1,8 +1,9 @@
 package com.file.shareby.controller;
 
+import com.file.shareby.DTO.UserDTO;
 import com.file.shareby.customexception.InvalidUserDataException;
-import com.file.shareby.payload.UserDTO;
 import com.file.shareby.service.UserService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
+@Api(tags = "User Services")
 @RequestMapping("/api")
 @Slf4j
 @RestController
@@ -24,15 +26,14 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO, HttpSession httpSession) {
-        UserDTO registerUser;
         try {
-            registerUser = userService.registerUser(userDTO, httpSession);
+            userService.registerUser(userDTO, httpSession);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (InvalidUserDataException e) {
-            e.printStackTrace();
+            log.debug("No details found with this user");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(registerUser, HttpStatus.CREATED);
     }
 }
