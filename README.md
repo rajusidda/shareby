@@ -15,7 +15,6 @@
 - H2 Database
 - Spring security
 - Maven
-- spring security
 - Swagger (partially implemented) 
 
 

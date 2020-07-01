@@ -4,6 +4,7 @@ import com.file.shareby.DTO.DownloadDTO;
 import com.file.shareby.DTO.FilesDTO;
 import com.file.shareby.DTO.SharedDataDTO;
 import com.file.shareby.DTO.UploadDataDTO;
+import com.file.shareby.config.SessionUtil;
 import com.file.shareby.customexception.FileNotFoundException;
 import com.file.shareby.customexception.FileStorageException;
 import com.file.shareby.domain.UploadData;
@@ -17,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
-
 @Api(tags = "Shareby Services")
 @RequestMapping("/api")
 @Slf4j
@@ -29,13 +28,13 @@ public class SharedbyController {
     private SharedbyService sharedbyService;
 
     @PostMapping("/v1/file/upload")
-    public ResponseEntity<UploadDataDTO> uploadFile(@RequestParam("file") MultipartFile file, HttpSession httpSession) {
-        UploadDataDTO uploadDataDTO;
+    public ResponseEntity<UploadDataDTO> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            User user = (User) httpSession.getAttribute("user");
+            User user = SessionUtil.getUser();
             UploadData uploadData = sharedbyService.uploadFile(file, user);
-            uploadDataDTO = new UploadDataDTO();
+            UploadDataDTO uploadDataDTO = new UploadDataDTO();
             uploadDataDTO.setId(uploadData.getId());
+            return new ResponseEntity<>(uploadDataDTO, HttpStatus.OK);
         } catch (FileStorageException e) {
             log.info("FileStorageException occurred while saving the file");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,13 +42,12 @@ public class SharedbyController {
             log.info("Exception occurred while saving the file");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(uploadDataDTO, HttpStatus.OK);
     }
 
     @GetMapping("/v1/file/{id}")
-    public ResponseEntity<DownloadDTO> downloadFile(@ModelAttribute DownloadDTO downloadDto, HttpSession httpSession) {
+    public ResponseEntity<DownloadDTO> downloadFile(@ModelAttribute DownloadDTO downloadDto) {
         try {
-            User user = (User) httpSession.getAttribute("user");
+            User user = SessionUtil.getUser();
             String fileResponse = sharedbyService.downloadFile(downloadDto.getId(), user);
             DownloadDTO file = new DownloadDTO();
             file.setFile(fileResponse);
@@ -64,8 +62,8 @@ public class SharedbyController {
     }
 
     @PostMapping("/v1/file/share")
-    public ResponseEntity<SharedDataDTO> shreFile(@RequestBody SharedDataDTO sharedDataDTO, HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
+    public ResponseEntity<SharedDataDTO> shreFile(@RequestBody SharedDataDTO sharedDataDTO) {
+        User user = SessionUtil.getUser();
         try {
             SharedDataDTO shareFile = sharedbyService.shareFile(sharedDataDTO, user);
             return new ResponseEntity<>(shareFile, HttpStatus.OK);
@@ -79,8 +77,8 @@ public class SharedbyController {
     }
 
     @GetMapping("/v1/file")
-    public ResponseEntity<FilesDTO> getFiles(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
+    public ResponseEntity<FilesDTO> getFiles() {
+        User user = SessionUtil.getUser();
         try {
             FilesDTO files = sharedbyService.getFiles(user);
             return new ResponseEntity<>(files, HttpStatus.OK);
